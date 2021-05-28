@@ -108,15 +108,17 @@ class SpacySenEntVisualizer(SentencelengthCounter):
         print("Displacy Visualizer for entities per sentence (Text {})".format(textindex))
 
     def visualize(self):
-        offset_index = 0  # offset to extract the right parts of the text
+        offset_index = 0 # offset to extract the right parts of the text
+        span_list = []
         for sen in self.sents_:  # go trough all sentences
             if self.trueSentence(sen):  # just take the 'real' sentences
-                span = self.setlengthlabels_(sen,
-                                             offset_index)  # get the span object with implemented entity labels to the corresponding sentence
+                span = self.setlengthlabels_(sen, offset_index)  # get the span object with implemented entity labels to the corresponding sentence
+                span_list.append(span)
                 self.doc.set_ents([span], default='unmodified')  # add new entity
-                displacy.serve(span, style="ent",
-                                options=self.options)  # display sentence with entity (NER Visualizer)
             offset_index += len(sen)  # increase the offset to adapt it for the next sentence
+
+        displacy.serve(span_list, style="ent",
+                       options=self.options)  # display sentence with entity (NER Visualizer)
 
     def setlengthlabels_(self, sen, offset_index):  # set for every sentence the corresponding entity label
         label = self.getsentencelengthtype(sen)  # get the corresponding label to the sentence
